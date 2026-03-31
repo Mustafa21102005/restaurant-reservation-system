@@ -49,9 +49,8 @@
                         </p>
 
                         <div class="s-about__content-media">
-                            <img class="s-about__media-big" src="{{ secure_asset('theme/images/home-about-img.jpg') }}">
-                            <img class="s-about__media-small"
-                                src="{{ secure_asset('theme/images/home-about-img-small.jpg') }}">
+                            <img class="s-about__media-big" src="{{ asset('theme/images/home-about-img.jpg') }}">
+                            <img class="s-about__media-small" src="{{ asset('theme/images/home-about-img-small.jpg') }}">
                         </div>
                     </div>
                 </div>
@@ -153,7 +152,7 @@
                                                     <img src="{{ $imagePath }}" alt="{{ $product->name }}"
                                                         style="width: 100%; height: 500px; object-fit: cover;">
                                                 @else
-                                                    <img src="{{ secure_asset('storage/' . $imagePath) }}"
+                                                    <img src="{{ asset('storage/' . $imagePath) }}"
                                                         alt="{{ $product->name }}"
                                                         style="width: 100%; height: 500px; object-fit: cover;">
                                                 @endif
@@ -195,8 +194,7 @@
 
                         <div class="s-testimonials__slide swiper-slide">
                             <div class="s-testimonials__author">
-                                <img src="{{ secure_asset('theme/images/avatars/user-02.jpg') }}"
-                                    class="s-testimonials__avatar">
+                                <img src="{{ asset('theme/images/avatars/user-02.jpg') }}" class="s-testimonials__avatar">
                                 <cite class="s-testimonials__cite">
                                     John Rockefeller
                                     <span>Cleveland, Ohio</span>
@@ -213,7 +211,7 @@
 
                         <div class="s-testimonials__slide swiper-slide">
                             <div class="s-testimonials__author">
-                                <img src="{{ secure_asset('theme/images/avatars/user-03.jpg') }}"
+                                <img src="{{ asset('theme/images/avatars/user-03.jpg') }}"
                                     class="s-testimonials__avatar">
                                 <cite class="s-testimonials__cite">
                                     Andrew Carnegie
@@ -230,7 +228,7 @@
 
                         <div class="s-testimonials__slide swiper-slide">
                             <div class="s-testimonials__author">
-                                <img src="{{ secure_asset('theme/images/avatars/user-01.jpg') }}"
+                                <img src="{{ asset('theme/images/avatars/user-01.jpg') }}"
                                     class="s-testimonials__avatar">
                                 <cite class="s-testimonials__cite">
                                     John Morgan
@@ -248,7 +246,7 @@
 
                         <div class="s-testimonials__slide swiper-slide">
                             <div class="s-testimonials__author">
-                                <img src="{{ secure_asset('theme/images/avatars/user-06.jpg') }}"
+                                <img src="{{ asset('theme/images/avatars/user-06.jpg') }}"
                                     class="s-testimonials__avatar">
                                 <cite class="s-testimonials__cite">
                                     Henry Ford

@@ -6,7 +6,7 @@
     <article class="s-content">
 
         <section class="s-pageheader"
-            style="background-image: url('{{ secure_asset('theme/images/pageheader/pageheader-about-bg-3000.jpg') }}')">
+            style="background-image: url('{{ asset('theme/images/pageheader/pageheader-about-bg-3000.jpg') }}')">
             <div class="row">
                 <div class="column xl-12 s-pageheader__content">
                     <h1 class="page-title">
@@ -43,7 +43,7 @@
                 </div>
                 <div class="column content-block__media">
                     <figure>
-                        <img src="{{ secure_asset('theme/images/about/about-img-01.jpg') }}">
+                        <img src="{{ asset('theme/images/about/about-img-01.jpg') }}">
                     </figure>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="column content-block__media">
                     <figure>
-                        <img src="{{ secure_asset('theme/images/about/about-img-02.jpg') }}">
+                        <img src="{{ asset('theme/images/about/about-img-02.jpg') }}">
                     </figure>
                 </div>
             </div>
@@ -83,7 +83,7 @@
                 </div>
                 <div class="column content-block__media">
                     <figure>
-                        <img src="{{ secure_asset('theme/images/about/about-img-03.jpg') }}">
+                        <img src="{{ asset('theme/images/about/about-img-03.jpg') }}">
                     </figure>
                 </div>
             </div>
@@ -200,8 +200,7 @@
 
                         <div class="s-testimonials__slide swiper-slide">
                             <div class="s-testimonials__author">
-                                <img src="{{ secure_asset('theme/images/avatars/user-02.jpg') }}"
-                                    class="s-testimonials__avatar">
+                                <img src="{{ asset('theme/images/avatars/user-02.jpg') }}" class="s-testimonials__avatar">
                                 <cite class="s-testimonials__cite">
                                     John Rockefeller
                                     <span>Cleveland, Ohio</span>
@@ -218,8 +217,7 @@
 
                         <div class="s-testimonials__slide swiper-slide">
                             <div class="s-testimonials__author">
-                                <img src="{{ secure_asset('theme/images/avatars/user-03.jpg') }}"
-                                    class="s-testimonials__avatar">
+                                <img src="{{ asset('theme/images/avatars/user-03.jpg') }}" class="s-testimonials__avatar">
                                 <cite class="s-testimonials__cite">
                                     Andrew Carnegie
                                     <span>Pittsburgh, Pennsylvania</span>
@@ -235,8 +233,7 @@
 
                         <div class="s-testimonials__slide swiper-slide">
                             <div class="s-testimonials__author">
-                                <img src="{{ secure_asset('theme/images/avatars/user-01.jpg') }}"
-                                    class="s-testimonials__avatar">
+                                <img src="{{ asset('theme/images/avatars/user-01.jpg') }}" class="s-testimonials__avatar">
                                 <cite class="s-testimonials__cite">
                                     John Morgan
                                     <span>New York City</span>
@@ -253,8 +250,7 @@
 
                         <div class="s-testimonials__slide swiper-slide">
                             <div class="s-testimonials__author">
-                                <img src="{{ secure_asset('theme/images/avatars/user-06.jpg') }}"
-                                    class="s-testimonials__avatar">
+                                <img src="{{ asset('theme/images/avatars/user-06.jpg') }}" class="s-testimonials__avatar">
                                 <cite class="s-testimonials__cite">
                                     Henry Ford
                                     <span>Dearborn, Michigan</span>
