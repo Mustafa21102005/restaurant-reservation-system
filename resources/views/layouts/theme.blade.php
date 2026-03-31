@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {{-- icons --}}
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ secure_asset('theme/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ secure_asset('theme/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ secure_asset('theme/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ secure_asset('theme/site.webmanifest') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('theme/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('theme/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('theme/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('theme/site.webmanifest') }}">
 
     <script>
         document.documentElement.classList.remove('no-js');
@@ -21,8 +21,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     {{-- styles --}}
-    <link rel="stylesheet" href="{{ secure_asset('theme/css/vendor.css') }}">
-    <link rel="stylesheet" href="{{ secure_asset('theme/css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('theme/css/vendor.css') }}">
+    <link rel="stylesheet" href="{{ asset('theme/css/styles.css') }}">
 
     @yield('styles')
 </head>
@@ -45,7 +45,7 @@
 
                 <div class="s-header__logo">
                     <a class="logo" href="{{ route('home') }}">
-                        <img src="{{ secure_asset('theme/images/logo.svg') }}">
+                        <img src="{{ asset('theme/images/logo.svg') }}">
                     </a>
                 </div>
 
@@ -90,7 +90,7 @@
 
                 <div class="s-header__nav-logo">
                     <a href="{{ route('home') }}">
-                        <img src="{{ secure_asset('theme/images/logo.svg') }}" alt="Homepage">
+                        <img src="{{ asset('theme/images/logo.svg') }}" alt="Homepage">
                     </a>
                 </div>
 
@@ -212,58 +212,58 @@
 
                     <div class="gallery-items grid-list-items">
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="{{ secure_asset('theme/images/gallery/large/l-gallery-01.jpg') }}"
+                            <a href="{{ asset('theme/images/gallery/large/l-gallery-01.jpg') }}"
                                 class="gallery-items__item-thumb glightbox">
-                                <img src="{{ secure_asset('theme/images/gallery/gallery-01.jpg') }}">
+                                <img src="{{ asset('theme/images/gallery/gallery-01.jpg') }}">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="{{ secure_asset('theme/images/gallery/large/l-gallery-02.jpg') }}"
+                            <a href="{{ asset('theme/images/gallery/large/l-gallery-02.jpg') }}"
                                 class="gallery-items__item-thumb glightbox">
-                                <img src="{{ secure_asset('theme/images/gallery/gallery-02.jpg') }}">
+                                <img src="{{ asset('theme/images/gallery/gallery-02.jpg') }}">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="{{ secure_asset('theme/images/gallery/large/l-gallery-03.jpg') }}"
+                            <a href="{{ asset('theme/images/gallery/large/l-gallery-03.jpg') }}"
                                 class="gallery-items__item-thumb glightbox">
-                                <img src="{{ secure_asset('theme/images/gallery/gallery-03.jpg') }}">
+                                <img src="{{ asset('theme/images/gallery/gallery-03.jpg') }}">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="{{ secure_asset('theme/images/gallery/large/l-gallery-04.jpg') }}"
+                            <a href="{{ asset('theme/images/gallery/large/l-gallery-04.jpg') }}"
                                 class="gallery-items__item-thumb glightbox">
-                                <img src="{{ secure_asset('theme/images/gallery/gallery-04.jpg') }}">
+                                <img src="{{ asset('theme/images/gallery/gallery-04.jpg') }}">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="{{ secure_asset('theme/images/gallery/large/l-gallery-05.jpg') }}"
+                            <a href="{{ asset('theme/images/gallery/large/l-gallery-05.jpg') }}"
                                 class="gallery-items__item-thumb glightbox">
-                                <img src="{{ secure_asset('theme/images/gallery/gallery-05.jpg') }}">
+                                <img src="{{ asset('theme/images/gallery/gallery-05.jpg') }}">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="{{ secure_asset('theme/images/gallery/large/l-gallery-06.jpg') }}"
+                            <a href="{{ asset('theme/images/gallery/large/l-gallery-06.jpg') }}"
                                 class="gallery-items__item-thumb glightbox">
-                                <img src="{{ secure_asset('theme/images/gallery/gallery-06.jpg') }}">
+                                <img src="{{ asset('theme/images/gallery/gallery-06.jpg') }}">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="{{ secure_asset('theme/images/gallery/large/l-gallery-07.jpg') }}"
+                            <a href="{{ asset('theme/images/gallery/large/l-gallery-07.jpg') }}"
                                 class="gallery-items__item-thumb glightbox">
-                                <img src="{{ secure_asset('theme/images/gallery/gallery-07.jpg') }}">
+                                <img src="{{ asset('theme/images/gallery/gallery-07.jpg') }}">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="{{ secure_asset('theme/images/gallery/large/l-gallery-08.jpg') }}"
+                            <a href="{{ asset('theme/images/gallery/large/l-gallery-08.jpg') }}"
                                 class="gallery-items__item-thumb glightbox">
-                                <img src="{{ secure_asset('theme/images/gallery/gallery-08.jpg') }}">
+                                <img src="{{ asset('theme/images/gallery/gallery-08.jpg') }}">
                             </a>
                         </div>
                     </div>
@@ -285,7 +285,7 @@
                 <div class="column xl-6 md-12 s-footer__block s-footer__about">
                     <div class="s-footer__logo">
                         <a class="logo" href="{{ route('home') }}">
-                            <img src="{{ secure_asset('theme/images/logo.svg') }}" alt="Homepage">
+                            <img src="{{ asset('theme/images/logo.svg') }}" alt="Homepage">
                         </a>
                     </div>
 
@@ -420,7 +420,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     {{-- scripts --}}
-    <script src="{{ secure_asset('theme/js/plugins.js') }}"></script>
+    <script src="{{ asset('theme/js/plugins.js') }}"></script>
 
     <script>
         function toggleDropdown(event) {
@@ -451,7 +451,7 @@
         }
     </script>
 
-    <script src="{{ secure_asset('theme/js/main.js') }}"></script>
+    <script src="{{ asset('theme/js/main.js') }}"></script>
 
     @yield('scripts')
 </body>

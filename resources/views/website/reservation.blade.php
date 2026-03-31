@@ -6,7 +6,7 @@
     <article class="s-content">
 
         <section class="s-pageheader pageheader"
-            style="background-image: url('{{ secure_asset('theme/images/pageheader/pageheader-reservations-bg-3000.jpg') }}')">
+            style="background-image: url('{{ asset('theme/images/pageheader/pageheader-reservations-bg-3000.jpg') }}')">
             <div class="row">
                 <div class="column xl-12 s-pageheader__content">
                     <h1 class="page-title">

@@ -22,7 +22,7 @@
                             <img src="{{ $imagePath }}" alt="{{ $product->name }}"
                                 style="width: 100%; height: 400px; object-fit: cover;" class="mb-4">
                         @else
-                            <img src="{{ secure_asset('storage/' . $imagePath) }}" alt="{{ $product->name }}"
+                            <img src="{{ asset('storage/' . $imagePath) }}" alt="{{ $product->name }}"
                                 style="width: 100%; height: 400px; object-fit: cover;" class="mb-4">
                         @endif
                     @else
