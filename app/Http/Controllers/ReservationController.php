@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CancelReservationRequest;
-use App\Http\Requests\FinishReservationRequest;
-use App\Models\Reservation;
-use App\Http\Requests\StoreReservationRequest;
-use App\Http\Requests\UpdateReservationRequest;
-use App\Mail\ReservationCanceled;
-use App\Mail\ReservationCompleted;
-use App\Models\User;
+use App\Http\Requests\{
+    CancelReservationRequest,
+    FinishReservationRequest,
+    StoreReservationRequest,
+    UpdateReservationRequest
+};
+use App\Models\{Reservation, User, Discount, TableSeat};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ReservationConfirmation;
-use App\Mail\ReservationReminder;
-use App\Mail\ReservationUpdated;
-use App\Models\Discount;
-use App\Models\TableSeat;
+use App\Mail\{
+    ReservationCanceled,
+    ReservationCompleted,
+    ReservationConfirmation,
+    ReservationReminder,
+    ReservationUpdated
+};
 use Carbon\Carbon;
 
 class ReservationController extends Controller

@@ -12,7 +12,12 @@ class PasswordResetTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_reset_password_link_screen_can_be_rendered(): void
+    protected function createUser(array $overrides = []): User
+    {
+        return User::factory()->create($overrides);
+    }
+
+    public function test_reset_password_link_page_can_be_rendered(): void
     {
         $response = $this->get('/forgot-password');
 
@@ -23,23 +28,23 @@ class PasswordResetTest extends TestCase
     {
         Notification::fake();
 
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $this->post('/forgot-password', ['email' => $user->email]);
 
         Notification::assertSentTo($user, ResetPassword::class);
     }
 
-    public function test_reset_password_screen_can_be_rendered(): void
+    public function test_reset_password_page_can_be_rendered(): void
     {
         Notification::fake();
 
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $this->post('/forgot-password', ['email' => $user->email]);
 
         Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-            $response = $this->get('/reset-password/'.$notification->token);
+            $response = $this->get('/reset-password/' . $notification->token);
 
             $response->assertStatus(200);
 
@@ -51,7 +56,7 @@ class PasswordResetTest extends TestCase
     {
         Notification::fake();
 
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $this->post('/forgot-password', ['email' => $user->email]);
 
@@ -69,5 +74,31 @@ class PasswordResetTest extends TestCase
 
             return true;
         });
+    }
+
+    public function test_reset_password_link_is_not_sent_to_unknown_email(): void
+    {
+        Notification::fake();
+
+        $response = $this->post('/forgot-password', [
+            'email' => 'nonexistent@example.com',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+        Notification::assertNothingSent();
+    }
+
+    public function test_password_cannot_be_reset_with_invalid_token(): void
+    {
+        $user = $this->createUser();
+
+        $response = $this->post('/reset-password', [
+            'token'                 => 'invalid-token',
+            'email'                 => $user->email,
+            'password'              => 'new-password',
+            'password_confirmation' => 'new-password',
+        ]);
+
+        $response->assertSessionHasErrors('email');
     }
 }
