@@ -24,7 +24,7 @@ class SendReservationRequest extends FormRequest
         return [
             'table' => ['required', 'exists:table_seats,id'],
             'datetime' => ['required', 'date', 'after:today'],
-            'info' => ['nullable', 'string', 'max:500'],
+            'info' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

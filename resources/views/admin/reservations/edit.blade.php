@@ -14,8 +14,7 @@
                     @method('PUT')
 
                     <div class="form-floating mb-3">
-                        <select class="form-select" name="user" id="floatingSelect"
-                            aria-label="Floating label select example" disabled>
+                        <select class="form-select" name="user" id="user" aria-label="Choose a Customer" disabled>
                             <option selected disabled>Choose Customer</option>
                             @foreach ($customers as $customer)
                                 <option value="{{ $customer->id }}"
@@ -23,14 +22,13 @@
                                 </option>
                             @endforeach
                         </select>
-                        <label for="floatingSelect">Customer</label>
+                        <label for="user">Customer</label>
                         <x-error-message field="user" />
                         <input type="hidden" name="user" value="{{ $reservation->user_id }}">
                     </div>
 
                     <div class="form-floating mb-3">
-                        <select class="form-select" name="table" id="table"
-                            aria-label="Floating label select example">
+                        <select class="form-select" name="table" id="table" aria-label="Choose a Table">
                             <option selected disabled>Choose Table</option>
                             @foreach ($tables as $table)
                                 <option value="{{ $table->id }}"
@@ -53,7 +51,7 @@
 
                     <div class="form-floating mb-3">
                         <textarea class="form-control" name="info" id="info" placeholder="Additional Information" style="height: 200px"
-                            disabled>{{ $reservation->info ?? 'No Adittional Info Provided' }} </textarea>
+                            disabled>{{ $reservation->info ?? 'No Adittional Info Provided' }}</textarea>
                         <label for="info">Additional Information</label>
                         <x-error-message field="info" />
                         <input type="hidden" name="info" value="{{ $reservation->info }}">
@@ -66,4 +64,14 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        flatpickr("#datetime", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            allowInput: true
+        });
+    </script>
 @endsection

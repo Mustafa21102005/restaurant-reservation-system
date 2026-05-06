@@ -25,7 +25,8 @@
 
                             <blockquote
                                 style="font-style: italic; color: #777; margin: 20px 0; padding-left: 20px; border-left: 3px solid #3490dc;">
-                                {{ $reason }}</blockquote>
+                                {{ $reason }}
+                            </blockquote>
                             We are sorry for any inconvenience this may have caused you.
                             </p>
 
