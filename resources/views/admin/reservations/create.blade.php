@@ -2,6 +2,53 @@
 
 @section('title', 'Create Reservation')
 
+@section('styles')
+    <style>
+        /* Select2 container */
+        .select2-container--default .select2-selection--single {
+            background-color: #2a2e33;
+            /* matches dark admin bg */
+            border: 1px solid #444;
+            height: 38px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Text inside */
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #fff;
+            line-height: 38px;
+        }
+
+        /* Arrow */
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 38px;
+        }
+
+        /* Dropdown */
+        .select2-container--default .select2-dropdown {
+            background-color: #2a2e33;
+            border: 1px solid #444;
+        }
+
+        /* Options */
+        .select2-container--default .select2-results__option {
+            color: #ddd;
+        }
+
+        /* Hover / selected */
+        .select2-container--default .select2-results__option--highlighted {
+            background-color: #eb1616;
+            color: white;
+        }
+
+        /* Selected option */
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: #eb1616;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="container pt-4 px-4">
         <div class="bg-secondary text-center rounded p-4">
@@ -16,47 +63,44 @@
                     @csrf
 
                     <div class="form-floating mb-3">
-                        <select class="form-select" name="user" id="floatingSelect"
-                            aria-label="Floating label select example">
-                            <option disabled selected>Choose Customer</option>
+                        <select class="form-select" name="user" id="user" aria-label="Choose a Customer">
+                            <option disabled selected>Choose a Customer</option>
                             @if ($customers->isEmpty())
-                                <option disabled>No cuustomers available</option>
+                                <option disabled>No customers available</option>
                             @else
                                 @foreach ($customers as $customer)
                                     <option value="{{ $customer->id }}">{{ $customer->email }}</option>
                                 @endforeach
                             @endif
                         </select>
-                        <label for="floatingSelect">Customer</label>
                         <x-error-message field="user" />
                     </div>
 
                     <div class="form-floating mb-3">
-                        <select class="form-select" name="table" id="table"
-                            aria-label="Floating label select example">
-                            <option disabled selected>Choose Table</option>
+                        <select class="form-select" name="table" id="table" aria-label="Choose a Table">
+                            <option disabled selected>Choose a Table</option>
                             @if ($tables->isEmpty())
                                 <option disabled>No tables available</option>
                             @else
                                 @foreach ($tables as $table)
-                                    <option value="{{ $table->id }}">Table {{ $table->id }} with a capacity of
-                                        {{ $table->capacity }}</option>
+                                    <option value="{{ $table->id }}">
+                                        Table {{ $table->id }} with a capacity of {{ $table->capacity }}
+                                    </option>
                                 @endforeach
                             @endif
                         </select>
-                        <label for="table">Table</label>
                         <x-error-message field="table" />
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="datetime-local" class="form-control" name="datetime" id="datetime"
-                            placeholder="Date & Time" required>
+                        <input type="text" class="form-control" name="datetime" id="datetime" required
+                            value="{{ old('datetime') }}">
                         <label for="datetime">Date & Time</label>
                         <x-error-message field="datetime" />
                     </div>
 
                     <div class="form-floating mb-3">
-                        <textarea class="form-control" name="info" id="info" placeholder="Additional Information" style="height: 200px"></textarea>
+                        <textarea class="form-control" name="info" id="info" placeholder="Additional Information" style="height: 200px">{{ old('info') }}</textarea>
                         <label for="info">Additional Information</label>
                         <x-error-message field="info" />
                     </div>
@@ -88,6 +132,15 @@
 
 @section('scripts')
     <script>
+        $('#user').select2();
+        $('#table').select2();
+
+        flatpickr("#datetime", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            allowInput: true
+        });
+
         document.getElementById('wants_reminder').addEventListener('change', function() {
             const reminderBox = document.getElementById('reminder_time_container');
             if (this.checked) {

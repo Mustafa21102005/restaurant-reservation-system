@@ -12,19 +12,23 @@ use App\Models\{Reservation, User, Discount, TableSeat};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\{
-    ReservationCanceled,
-    ReservationCompleted,
-    ReservationConfirmation,
-    ReservationReminder,
-    ReservationUpdated
-};
-use Carbon\Carbon;
+use App\Mail\ReservationCompleted;
+use App\Services\ReservationService;
+use Exception;
 
 class ReservationController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(private ReservationService $reservationService) {}
+
+    /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -35,6 +39,8 @@ class ReservationController extends Controller
 
     /**
      * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -46,87 +52,38 @@ class ReservationController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\StoreReservationRequest  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(StoreReservationRequest $request)
     {
         $data = $request->validated();
-
         $user = User::find($data['user']);
 
         if (!$user) {
             return redirect()->back()->withErrors(['error' => 'User not found.']);
         }
 
-        // Check if the user is banned
-        if ($user->isBanned()) {
-            return redirect()->back()->withErrors(['error' => 'This customer is banned and cannot make a reservation.']);
-        }
-
-        // Check if the user is in timeout
-        if ($user->isTimedOut()) {
-            $timeout = $user->timeouts()->where('expires_at', '>', now())->first();
-            if ($timeout) {
-                return redirect()->back()
-                    ->withErrors(['error' => 'This customer is in timeout until ' . $timeout->expires_at . '.']);
-            }
-        }
-
-        // Check for existing reservation
-        $existingReservation = Reservation::where('user_id', $user->id)
-            ->whereIn('status', ['ongoing', 'seated'])
-            ->first();
-
-        if ($existingReservation) {
-            return redirect()->back()->withErrors(['error' => 'Customer already has a reservation.']);
-        }
-
-        // Lock the table and check availability
-        $table = TableSeat::lockForUpdate()->find($request->table);
-        if (!$table || $table->status !== 'available') {
-            return redirect()->back()->withErrors(['error' => 'Table is not available.']);
-        }
-
-        DB::transaction(function () use ($data, $user) {
-
-            $table = TableSeat::lockForUpdate()->find($data['table']);
-
-            if (!$table || $table->status !== 'available') {
-                abort(422, 'Table is not available.');
-            }
-
-            $verificationCode = strtoupper(Str::random(6));
-
-            $reservation = Reservation::create([
-                'user_id'           => $user->id,
-                'table_id'          => $data['table'],
-                'datetime'          => $data['datetime'],
-                'info'              => $data['info'] ?? null,
-                'verification_code' => $verificationCode,
-                'status'            => 'ongoing',
-            ]);
-
-            $table->update(['status' => 'reserved']);
-
-            Mail::to($user->email)->queue(
-                new ReservationConfirmation($user, $verificationCode)
+        try {
+            $this->reservationService->create(
+                $data,
+                $user,
+                request()->boolean('wants_reminder'),
+                (int) request()->input('reminder_time', 10)
             );
-
-            if (request()->boolean('wants_reminder')) {
-                $minutes = (int) request()->input('reminder_time', 10);
-                $sendAt  = Carbon::parse($data['datetime'])->subMinutes($minutes);
-
-                Mail::to($user->email)->later(
-                    $sendAt,
-                    new ReservationReminder($reservation)
-                );
-            }
-        });
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
 
         return redirect()->route('reservations.index')->with('success', 'Reservation Created Successfully.');
     }
 
     /**
      * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Reservation  $reservation
+     * @return \Illuminate\Http\Response
      */
     public function edit(Reservation $reservation)
     {
@@ -139,44 +96,27 @@ class ReservationController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\UpdateReservationRequest  $request
+     * @param  \App\Models\Reservation  $reservation
+     * @return \Illuminate\Http\Response
      */
     public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
-        $validated = $request->validated();
-
-        DB::transaction(function () use ($validated, $reservation) {
-
-            // Lock current reservation row
-            $reservation->lockForUpdate();
-
-            // If table changed, update table statuses safely
-            if ($reservation->table_id != $validated['table']) {
-
-                $oldTable = TableSeat::lockForUpdate()->find($reservation->table_id);
-                $newTable = TableSeat::lockForUpdate()->find($validated['table']);
-
-                if ($newTable->status !== 'available') {
-                    abort(422, 'Selected table is no longer available.');
-                }
-
-                $oldTable->update(['status' => 'available']);
-                $newTable->update(['status' => 'reserved']);
-            }
-
-            $reservation->update([
-                'table_id' => $validated['table'],
-                'datetime' => $validated['datetime'],
-                'info'     => $validated['info'] ?? null,
-            ]);
-        });
-
-        Mail::to($reservation->user->email)->queue(new ReservationUpdated($reservation));
+        try {
+            $this->reservationService->update($reservation, $request->validated());
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
 
         return redirect()->route('reservations.index')->with('success', 'Reservation Updated Successfully.');
     }
 
     /**
-     * Show the details of a specific reservation.
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Reservation  $reservation
+     * @return \Illuminate\Http\Response
      */
     public function show(Reservation $reservation)
     {
@@ -186,44 +126,24 @@ class ReservationController extends Controller
     }
 
     /**
-     * Cancel a reservation and update the related table's status to available.
+     * Cancel a reservation.
      *
-     * @param \App\Models\Reservation $reservation The reservation to be canceled.
-     * @param string|null $reason Optional reason for the cancellation, used for notifying the user via email.
-     *
-     * @return void
-     */
-    public function cancelReservation(Reservation $reservation, string $reason = null)
-    {
-        $table = TableSeat::find($reservation->table_id);
-
-        if ($table) {
-            $table->status = 'available';
-            $table->save();
-        }
-
-        $reservation->status = 'canceled';
-        $reservation->save();
-
-        if ($reason) {
-            Mail::to($reservation->user->email)->queue(new ReservationCanceled($reservation, $reason));
-        }
-    }
-
-    /**
-     * Cancel the specified reservation.
+     * @param  \App\Http\Requests\CancelReservationRequest  $request
+     * @param  \App\Models\Reservation  $reservation
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function cancel(CancelReservationRequest $request, Reservation $reservation)
     {
-        $reason = $request->input('reason');
-
-        $this->cancelReservation($reservation, $reason);
+        $this->reservationService->cancel($reservation, reason: $request->input('reason'));
 
         return redirect()->route('reservations.index')->with('success', 'Reservation Canceled Successfully.');
     }
 
     /**
-     * Verify the specified reservation.
+     * Verify a reservation.
+     *
+     * @param  \App\Models\Reservation  $reservation
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function verify(Reservation $reservation)
     {
@@ -256,7 +176,11 @@ class ReservationController extends Controller
     }
 
     /**
-     * Finish the specified reservation.
+     * Finish a reservation.
+     *
+     * @param  \App\Http\Requests\FinishReservationRequest  $request
+     * @param  \App\Models\Reservation  $reservation
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function finish(FinishReservationRequest $request, Reservation $reservation)
     {

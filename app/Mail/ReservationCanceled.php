@@ -17,7 +17,7 @@ class ReservationCanceled extends Mailable implements ShouldQueue
     /**
      * Create a new message instance.
      */
-    public function __construct(public Reservation $reservation, public $reason)
+    public function __construct(public Reservation $reservation, public string $reason)
     {
         $this->reservation = $reservation;
         $this->reason = $reason;

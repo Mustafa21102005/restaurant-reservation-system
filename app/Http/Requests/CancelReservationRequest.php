@@ -22,7 +22,7 @@ class CancelReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reason' => 'required|string|max:300',
+            'reason' => 'required|string|max:255',
         ];
     }
 }
