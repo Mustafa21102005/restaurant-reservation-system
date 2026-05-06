@@ -2,13 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\Reservation;
-use App\Models\TableSeat;
-use App\Models\User;
+use App\Models\{
+    Category,
+    Product,
+    Reservation,
+    TableSeat,
+    User
+};
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,8 +19,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create roles
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'customer']);
+        $this->call(RolesSeeder::class);
 
         // Create admin user
         $admin = User::factory()->create([

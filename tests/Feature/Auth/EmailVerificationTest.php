@@ -13,9 +13,14 @@ class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_email_verification_screen_can_be_rendered(): void
+    protected function createUnverifiedUser(): User
     {
-        $user = User::factory()->unverified()->create();
+        return User::factory()->unverified()->create();
+    }
+
+    public function test_email_verification_page_can_be_rendered(): void
+    {
+        $user = $this->createUnverifiedUser();
 
         $response = $this->actingAs($user)->get('/verify-email');
 
@@ -24,7 +29,7 @@ class EmailVerificationTest extends TestCase
 
     public function test_email_can_be_verified(): void
     {
-        $user = User::factory()->unverified()->create();
+        $user = $this->createUnverifiedUser();
 
         Event::fake();
 
@@ -38,12 +43,12 @@ class EmailVerificationTest extends TestCase
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
+        $response->assertRedirect(route('home', absolute: false));
     }
 
     public function test_email_is_not_verified_with_invalid_hash(): void
     {
-        $user = User::factory()->unverified()->create();
+        $user = $this->createUnverifiedUser();
 
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
@@ -52,6 +57,76 @@ class EmailVerificationTest extends TestCase
         );
 
         $this->actingAs($user)->get($verificationUrl);
+
+        $this->assertFalse($user->fresh()->hasVerifiedEmail());
+    }
+
+    public function test_already_verified_user_is_redirected(): void
+    {
+        // already verified user visiting /verify-email should be redirected away
+        $user = User::factory()->create(); // factory creates verified by default
+
+        /** @var \App\Models\User $user */
+        $response = $this->actingAs($user)->get('/verify-email');
+
+        $response->assertRedirect(route('home', absolute: false));
+    }
+
+    public function test_verification_link_can_be_resent(): void
+    {
+        $user = $this->createUnverifiedUser();
+
+        $response = $this->actingAs($user)->post('/email/verification-notification');
+
+        $response->assertSessionHas('status', 'verification-link-sent');
+        $response->assertRedirect();
+    }
+
+    public function test_verified_user_resending_link_is_redirected(): void
+    {
+        // already verified user trying to resend should just be redirected
+        $user = User::factory()->create();
+
+        /** @var \App\Models\User $user */
+        $response = $this->actingAs($user)->post('/email/verification-notification');
+
+        $response->assertRedirect(route('home', absolute: false));
+    }
+
+    public function test_email_cannot_be_verified_with_expired_link(): void
+    {
+        $user = $this->createUnverifiedUser();
+
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->subMinutes(60), // expired
+            ['id' => $user->id, 'hash' => sha1($user->email)]
+        );
+
+        $this->actingAs($user)->get($verificationUrl);
+
+        $this->assertFalse($user->fresh()->hasVerifiedEmail());
+    }
+
+    public function test_unauthenticated_user_cannot_access_verification_page(): void
+    {
+        $response = $this->get('/verify-email');
+
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_user_cannot_verify_another_users_email(): void
+    {
+        $user = $this->createUnverifiedUser();
+        $otherUser = $this->createUnverifiedUser();
+
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $user->id, 'hash' => sha1($user->email)]
+        );
+
+        $this->actingAs($otherUser)->get($verificationUrl);
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }
