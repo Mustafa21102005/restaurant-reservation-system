@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Reservation;
-use App\Models\TableSeat;
-use App\Models\User;
+use App\Models\{Reservation, TableSeat, User};
 use Carbon\Carbon;
 
 class DashboardController extends Controller

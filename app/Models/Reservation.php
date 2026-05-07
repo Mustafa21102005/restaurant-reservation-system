@@ -21,7 +21,8 @@ class Reservation extends Model
         'datetime',
         'info',
         'verification_code',
-        'status'
+        'status',
+        'warning_sent_at'
     ];
 
     /**
