@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Discount extends Model
 {
-    /** @use HasFactory<\Database\Factories\DiscountFactory> */
     use HasFactory;
 
     /**
